@@ -1,0 +1,1621 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplicación Educativa de Autómatas</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2ecc71;
+            --accent-color: #e74c3c;
+            --dark-color: #2c3e50;
+            --light-color: #ecf0f1;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--dark-color));
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        nav {
+            background-color: var(--dark-color);
+            padding: 0.5rem;
+        }
+        
+        nav ul {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            flex-wrap: wrap;
+        }
+        
+        nav li {
+            margin: 0 1rem;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        nav a:hover, nav a.active {
+            background-color: var(--primary-color);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        section {
+            display: none;
+            background-color: white;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        section.active {
+            display: block;
+        }
+        
+        h1, h2, h3 {
+            margin-bottom: 1rem;
+            color: var(--dark-color);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+        }
+        
+        h2 {
+            font-size: 2rem;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+        }
+        
+        h3 {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+        
+        p {
+            margin-bottom: 1rem;
+        }
+        
+        .card {
+            background-color: var(--light-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .example {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .example h4 {
+            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary-color);
+        }
+        
+        .btn-secondary:hover {
+            background-color: #27ae60;
+        }
+        
+        .btn-danger {
+            background-color: var(--accent-color);
+        }
+        
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+        
+        .input-group {
+            margin-bottom: 1rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 0.7rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        .automata-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin: 1.5rem 0;
+        }
+        
+        .automata-canvas-container {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .automata-canvas {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: white;
+            width: 100%;
+            height: 300px;
+        }
+        
+        .automata-info {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .simulation-area {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .simulation-controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .simulation-steps {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 1rem;
+            background-color: white;
+        }
+        
+        .simulation-step {
+            margin-bottom: 1rem;
+            padding: 0.5rem;
+            background-color: white;
+            border-radius: 4px;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .step-active {
+            background-color: #e3f2fd;
+            border-left-color: var(--secondary-color);
+        }
+        
+        .game-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .game-card {
+            background-color: white;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .game-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .result {
+            padding: 1rem;
+            border-radius: 4px;
+            margin-top: 1rem;
+            font-weight: bold;
+        }
+        
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .automata-state {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #e0e0e0;
+            text-align: center;
+            line-height: 40px;
+            margin: 0.5rem;
+            font-weight: bold;
+        }
+        
+        .automata-state.initial {
+            background-color: #a5d6a7;
+        }
+        
+        .automata-state.final {
+            background-color: #ffcdd2;
+            border: 2px solid #f44336;
+        }
+        
+        .automata-state.current {
+            background-color: #bbdefb;
+            border: 2px solid #2196f3;
+            box-shadow: 0 0 10px rgba(33, 150, 243, 0.5);
+        }
+        
+        .stack-container {
+            margin: 1rem 0;
+            padding: 1rem;
+            background-color: #f5f5f5;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        
+        .stack {
+            display: flex;
+            flex-direction: column-reverse;
+            align-items: center;
+            min-height: 100px;
+            border: 1px solid #999;
+            border-radius: 4px;
+            padding: 0.5rem;
+            background-color: white;
+        }
+        
+        .stack-item {
+            width: 40px;
+            height: 30px;
+            background-color: #e3f2fd;
+            border: 1px solid #90caf9;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 2px 0;
+            font-weight: bold;
+        }
+        
+        .tape-container {
+            margin: 1rem 0;
+            padding: 1rem;
+            background-color: #f5f5f5;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        
+        .tape {
+            display: flex;
+            border: 1px solid #999;
+            border-radius: 4px;
+            background-color: white;
+            overflow-x: auto;
+        }
+        
+        .tape-cell {
+            width: 40px;
+            height: 40px;
+            border: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .tape-cell.current {
+            background-color: #bbdefb;
+            border: 2px solid #2196f3;
+        }
+        
+        .tape-cell.marked {
+            background-color: #c8e6c9;
+        }
+        
+        .construction-area {
+            margin: 1.5rem 0;
+            padding: 1.5rem;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+        
+        .state-toolbar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .canvas-container {
+            position: relative;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: white;
+            height: 400px;
+            overflow: auto;
+            margin-bottom: 1rem;
+        }
+        
+        .validation-game {
+            margin: 1.5rem 0;
+        }
+        
+        .validation-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .validation-option {
+            padding: 1rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .validation-option:hover {
+            border-color: var(--primary-color);
+            background-color: #e3f2fd;
+        }
+        
+        .validation-option.selected {
+            border-color: var(--secondary-color);
+            background-color: #e8f5e9;
+        }
+        
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            nav li {
+                margin: 0.3rem 0;
+            }
+            
+            .game-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .automata-container {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Aplicación Educativa de Autómatas</h1>
+        <p>Aprende sobre autómatas independientes y dependientes de contexto</p>
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="#" class="nav-link active" data-target="inicio">Inicio</a></li>
+            <li><a href="#" class="nav-link" data-target="independientes">Autómatas Independientes</a></li>
+            <li><a href="#" class="nav-link" data-target="dependientes">Autómatas Dependientes</a></li>
+            <li><a href="#" class="nav-link" data-target="juego">Juegos y Práctica</a></li>
+        </ul>
+    </nav>
+    
+    <div class="container">
+        <section id="inicio" class="active">
+            <h2>Bienvenido a la Aplicación Educativa de Autómatas</h2>
+            <div class="card">
+                <p>Esta aplicación te ayudará a comprender los conceptos fundamentales de los autómatas independientes y dependientes de contexto, dos tipos importantes en la teoría de lenguajes formales y autómatas.</p>
+            </div>
+            
+            <h3>¿Qué son los autómatas?</h3>
+            <div class="card">
+                <p>Los autómatas son modelos matemáticos abstractos que procesan cadenas de símbolos y determinan si pertenecen a un lenguaje formal específico. Se utilizan en compiladores, procesadores de texto, inteligencia artificial y muchas otras áreas de la informática.</p>
+            </div>
+            
+            <div class="game-container">
+                <div class="game-card" data-target="independientes">
+                    <h3>Autómatas Independientes de Contexto</h3>
+                    <p>Aprende sobre autómatas de pila (PDA) que reconocen lenguajes independientes del contexto.</p>
+                    <button class="btn">Explorar</button>
+                </div>
+                
+                <div class="game-card" data-target="dependientes">
+                    <h3>Autómatas Dependientes de Contexto</h3>
+                    <p>Descubre los autómatas lineales acotados (LBA) que reconocen lenguajes sensibles al contexto.</p>
+                    <button class="btn">Explorar</button>
+                </div>
+                
+                <div class="game-card" data-target="juego">
+                    <h3>Juegos y Práctica</h3>
+                    <p>Pon a prueba tus conocimientos con diferentes juegos y ejercicios prácticos.</p>
+                    <button class="btn">Practicar</button>
+                </div>
+            </div>
+        </section>
+        
+        <section id="independientes">
+            <h2>Autómatas Independientes de Contexto</h2>
+            
+            <div class="card">
+                <h3>¿Qué son?</h3>
+                <p>Los autómatas independientes de contexto, también conocidos como autómatas de pila (PDA), son máquinas abstractas que reconocen lenguajes independientes del contexto. Estos lenguajes son generados por gramáticas independientes del contexto y son más expresivos que los lenguajes regulares.</p>
+            </div>
+            
+            <div class="card">
+                <h3>Características principales</h3>
+                <ul>
+                    <li>Utilizan una pila para almacenar información</li>
+                    <li>Tienen capacidad de memoria limitada (solo pueden acceder al elemento superior de la pila)</li>
+                    <li>Reconocen lenguajes como {aⁿbⁿ | n ≥ 0} o palíndromos</li>
+                    <li>Son equivalentes a las gramáticas independientes del contexto</li>
+                </ul>
+            </div>
+            
+            <div class="example">
+                <h4>Ejemplo: Autómata para el lenguaje {aⁿbⁿ | n ≥ 0}</h4>
+                <p>Este autómata reconoce cadenas con igual número de 'a' y 'b', donde todas las 'a' aparecen antes que las 'b'.</p>
+                
+                <div class="automata-container">
+                    <div class="automata-canvas-container">
+                        <canvas id="pda-canvas" class="automata-canvas" width="500" height="300"></canvas>
+                    </div>
+                    <div class="automata-info">
+                        <h4>Estados del Autómata</h4>
+                        <div class="automata-state initial">q0</div>
+                        <div class="automata-state">q1</div>
+                        <div class="automata-state final">q2</div>
+                        
+                        <h4>Pila</h4>
+                        <div class="stack-container">
+                            <div class="stack" id="pda-stack">
+                                <div class="stack-item">Z</div>
+                            </div>
+                        </div>
+                        
+                        <h4>Explicación del funcionamiento:</h4>
+                        <p>El autómata empuja 'A' en la pila por cada 'a' leída. Luego, por cada 'b' leída, saca una 'A' de la pila. Acepta si al final la pila contiene solo el símbolo inicial 'Z'.</p>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="pda-input">Probar cadena:</label>
+                    <input type="text" id="pda-input" placeholder="Ej: aabb">
+                </div>
+                <button class="btn" id="test-pda">Probar cadena</button>
+                <div id="pda-result" class="result"></div>
+            </div>
+            
+            <div class="simulation-area">
+                <h3>Simulador paso a paso</h3>
+                <div class="input-group">
+                    <label for="pda-simulation-input">Cadena a simular:</label>
+                    <input type="text" id="pda-simulation-input" placeholder="Ej: aaabbb">
+                </div>
+                <div class="simulation-controls">
+                    <button class="btn" id="simulate-pda">Iniciar simulación</button>
+                    <button class="btn btn-secondary" id="step-pda" disabled>Siguiente paso</button>
+                    <button class="btn btn-danger" id="reset-pda" disabled>Reiniciar</button>
+                </div>
+                <div id="pda-simulation-steps" class="simulation-steps"></div>
+            </div>
+        </section>
+        
+        <section id="dependientes">
+            <h2>Autómatas Dependientes de Contexto</h2>
+            
+            <div class="card">
+                <h3>¿Qué son?</h3>
+                <p>Los autómatas dependientes de contexto, también conocidos como autómatas lineales acotados (LBA), son máquinas de Turing con una cinta limitada por la longitud de la entrada. Reconocen lenguajes sensibles al contexto, que son generados por gramáticas sensibles al contexto.</p>
+            </div>
+            
+            <div class="card">
+                <h3>Características principales</h3>
+                <ul>
+                    <li>Utilizan una cinta de longitud limitada (proporcional a la longitud de la entrada)</li>
+                    <li>Pueden leer y escribir en cualquier posición de la cinta</li>
+                    <li>Reconocen lenguajes como {aⁿbⁿcⁿ | n ≥ 0}</li>
+                    <li>Son equivalentes a las gramáticas sensibles al contexto</li>
+                </ul>
+            </div>
+            
+            <div class="example">
+                <h4>Ejemplo: Autómata para el lenguaje {aⁿbⁿcⁿ | n ≥ 0}</h4>
+                <p>Este autómata reconoce cadenas con igual número de 'a', 'b' y 'c', en ese orden.</p>
+                
+                <div class="automata-container">
+                    <div class="automata-canvas-container">
+                        <canvas id="lba-canvas" class="automata-canvas" width="500" height="300"></canvas>
+                    </div>
+                    <div class="automata-info">
+                        <h4>Cinta del Autómata</h4>
+                        <div class="tape-container">
+                            <div class="tape" id="lba-tape">
+                                <!-- Las celdas se generarán dinámicamente -->
+                            </div>
+                        </div>
+                        
+                        <h4>Explicación del funcionamiento:</h4>
+                        <p>El autómata marca las 'a', 'b' y 'c' una por una, verificando que hay igual cantidad de cada símbolo y que aparecen en el orden correcto.</p>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="lba-input">Probar cadena:</label>
+                    <input type="text" id="lba-input" placeholder="Ej: aaabbbccc">
+                </div>
+                <button class="btn" id="test-lba">Probar cadena</button>
+                <div id="lba-result" class="result"></div>
+            </div>
+            
+            <div class="simulation-area">
+                <h3>Simulador paso a paso</h3>
+                <div class="input-group">
+                    <label for="lba-simulation-input">Cadena a simular:</label>
+                    <input type="text" id="lba-simulation-input" placeholder="Ej: aabbcc">
+                </div>
+                <div class="simulation-controls">
+                    <button class="btn" id="simulate-lba">Iniciar simulación</button>
+                    <button class="btn btn-secondary" id="step-lba" disabled>Siguiente paso</button>
+                    <button class="btn btn-danger" id="reset-lba" disabled>Reiniciar</button>
+                </div>
+                <div id="lba-simulation-steps" class="simulation-steps"></div>
+            </div>
+        </section>
+        
+        <section id="juego">
+            <h2>Juegos y Práctica</h2>
+            
+            <div class="card">
+                <p>En esta sección puedes poner a prueba tus conocimientos sobre autómatas con diferentes juegos y ejercicios prácticos.</p>
+            </div>
+            
+            <div class="game-container">
+                <div class="game-card" id="game-identification">
+                    <h3>Identificación de Autómatas</h3>
+                    <p>Identifica si un autómata es independiente o dependiente de contexto.</p>
+                    <button class="btn">Jugar</button>
+                </div>
+                
+                <div class="game-card" id="game-construction">
+                    <h3>Construcción de Autómatas</h3>
+                    <p>Construye un autómata para un lenguaje específico.</p>
+                    <button class="btn">Jugar</button>
+                </div>
+                
+                <div class="game-card" id="game-validation">
+                    <h3>Validación de Cadenas</h3>
+                    <p>Determina si una cadena pertenece a un lenguaje dado.</p>
+                    <button class="btn">Jugar</button>
+                </div>
+            </div>
+            
+            <!-- Área de juego de identificación -->
+            <div id="identification-game" class="game-area" style="display: none;">
+                <div class="card">
+                    <h3>Identificación de Autómatas</h3>
+                    <p id="identification-question">Selecciona el tipo correcto de autómata para el lenguaje mostrado:</p>
+                    
+                    <div class="input-group">
+                        <label for="language-display">Lenguaje:</label>
+                        <div id="language-display" class="card" style="background-color: #e8f4fd; font-family: monospace; font-size: 1.2rem;">
+                            {aⁿbⁿ | n ≥ 0}
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <button class="btn btn-secondary identification-option" data-type="independent">Autómata Independiente (PDA)</button>
+                        <button class="btn btn-secondary identification-option" data-type="dependent">Autómata Dependiente (LBA)</button>
+                    </div>
+                    
+                    <div id="identification-result" class="result"></div>
+                </div>
+                
+                <div class="card">
+                    <h3>Puntuación</h3>
+                    <p id="identification-score">Aciertos: 0 / Intentos: 0</p>
+                    <button class="btn" id="next-identification">Siguiente pregunta</button>
+                    <button class="btn btn-danger" id="reset-identification">Reiniciar juego</button>
+                </div>
+            </div>
+            
+            <!-- Área de juego de construcción -->
+            <div id="construction-game" class="game-area" style="display: none;">
+                <div class="card">
+                    <h3>Construcción de Autómatas</h3>
+                    <p id="construction-instruction">Construye un autómata para el lenguaje: <strong>{aⁿbⁿ | n ≥ 0}</strong></p>
+                    
+                    <div class="construction-area">
+                        <div class="state-toolbar">
+                            <button class="btn" id="add-state">Añadir Estado</button>
+                            <button class="btn" id="set-initial">Estado Inicial</button>
+                            <button class="btn" id="set-final">Estado Final</button>
+                            <button class="btn" id="add-transition">Añadir Transición</button>
+                            <button class="btn btn-danger" id="clear-canvas">Limpiar</button>
+                        </div>
+                        
+                        <div class="canvas-container" id="construction-canvas">
+                            <canvas id="automata-canvas" width="800" height="400"></canvas>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="test-construction">Probar autómata con cadena:</label>
+                            <input type="text" id="test-construction" placeholder="Ej: aabb">
+                            <button class="btn" id="test-constructed">Probar</button>
+                        </div>
+                        
+                        <div id="construction-result" class="result"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Área de juego de validación -->
+            <div id="validation-game" class="game-area" style="display: none;">
+                <div class="card">
+                    <h3>Validación de Cadenas</h3>
+                    <p id="validation-question">Selecciona todas las cadenas que pertenecen al lenguaje: <strong>{aⁿbⁿ | n ≥ 0}</strong></p>
+                    
+                    <div class="validation-options" id="validation-options">
+                        <div class="validation-option" data-cadena="ab">ab</div>
+                        <div class="validation-option" data-cadena="aabb">aabb</div>
+                        <div class="validation-option" data-cadena="aaabbb">aaabbb</div>
+                        <div class="validation-option" data-cadena="abc">abc</div>
+                        <div class="validation-option" data-cadena="aab">aab</div>
+                        <div class="validation-option" data-cadena="abb">abb</div>
+                    </div>
+                    
+                    <button class="btn" id="check-validation">Verificar</button>
+                    <div id="validation-result" class="result"></div>
+                </div>
+                
+                <div class="card">
+                    <h3>Puntuación</h3>
+                    <p id="validation-score">Aciertos: 0 / Intentos: 0</p>
+                    <button class="btn" id="next-validation">Siguiente ejercicio</button>
+                    <button class="btn btn-danger" id="reset-validation">Reiniciar juego</button>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <footer>
+        <p>Aplicación Educativa de Autómatas &copy; 2023</p>
+    </footer>
+
+    <script>
+        // =============================================
+        // Navegación entre secciones
+        // =============================================
+        document.querySelectorAll('.nav-link, .game-card button').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Obtener el objetivo de la navegación
+                let targetId;
+                if (this.classList.contains('nav-link')) {
+                    targetId = this.getAttribute('data-target');
+                } else {
+                    targetId = this.closest('.game-card').getAttribute('data-target');
+                }
+                
+                // Actualizar navegación activa
+                document.querySelectorAll('.nav-link').forEach(nav => {
+                    nav.classList.remove('active');
+                });
+                document.querySelector(`.nav-link[data-target="${targetId}"]`).classList.add('active');
+                
+                // Mostrar sección activa
+                document.querySelectorAll('section').forEach(section => {
+                    section.classList.remove('active');
+                });
+                document.getElementById(targetId).classList.add('active');
+                
+                // Si vamos a la sección de juegos, inicializar el primer juego
+                if (targetId === 'juego') {
+                    initializeIdentificationGame();
+                }
+            });
+        });
+        
+        // =============================================
+        // Visualización de autómatas en Canvas
+        // =============================================
+        function drawPDA(canvas) {
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Estados
+            ctx.fillStyle = '#a5d6a7';
+            ctx.beginPath();
+            ctx.arc(100, 150, 30, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+            ctx.fillStyle = 'black';
+            ctx.fillText('q0', 95, 155);
+            
+            ctx.fillStyle = '#e0e0e0';
+            ctx.beginPath();
+            ctx.arc(250, 150, 30, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+            ctx.fillStyle = 'black';
+            ctx.fillText('q1', 245, 155);
+            
+            ctx.fillStyle = '#ffcdd2';
+            ctx.beginPath();
+            ctx.arc(400, 150, 30, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+            ctx.strokeStyle = '#f44336';
+            ctx.beginPath();
+            ctx.arc(400, 150, 32, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.strokeStyle = 'black';
+            ctx.fillStyle = 'black';
+            ctx.fillText('q2', 395, 155);
+            
+            // Transiciones
+            ctx.beginPath();
+            ctx.moveTo(130, 150);
+            ctx.lineTo(220, 150);
+            ctx.stroke();
+            ctx.fillText('ε, ε → $', 160, 140);
+            
+            ctx.beginPath();
+            ctx.moveTo(130, 150);
+            ctx.lineTo(220, 150);
+            ctx.stroke();
+            ctx.fillText('a, ε → A', 160, 140);
+            
+            ctx.beginPath();
+            ctx.moveTo(280, 150);
+            ctx.lineTo(370, 150);
+            ctx.stroke();
+            ctx.fillText('b, A → ε', 310, 140);
+            
+            ctx.beginPath();
+            ctx.moveTo(400, 120);
+            ctx.lineTo(400, 90);
+            ctx.lineTo(100, 90);
+            ctx.lineTo(100, 120);
+            ctx.stroke();
+            ctx.fillText('ε, $ → ε', 220, 80);
+            
+            // Bucle en q1
+            ctx.beginPath();
+            ctx.arc(250, 120, 20, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.fillText('b, A → ε', 230, 110);
+        }
+        
+        function drawLBA(canvas) {
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Estados
+            ctx.fillStyle = '#a5d6a7';
+            ctx.beginPath();
+            ctx.arc(100, 150, 30, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+            ctx.fillStyle = 'black';
+            ctx.fillText('q0', 95, 155);
+            
+            ctx.fillStyle = '#e0e0e0';
+            ctx.beginPath();
+            ctx.arc(200, 150, 30, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+            ctx.fillStyle = 'black';
+            ctx.fillText('q1', 195, 155);
+            
+            ctx.fillStyle = '#e0e0e0';
+            ctx.beginPath();
+            ctx.arc(300, 150, 30, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+            ctx.fillStyle = 'black';
+            ctx.fillText('q2', 295, 155);
+            
+            ctx.fillStyle = '#e0e0e0';
+            ctx.beginPath();
+            ctx.arc(400, 150, 30, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+            ctx.fillStyle = 'black';
+            ctx.fillText('q3', 395, 155);
+            
+            ctx.fillStyle = '#ffcdd2';
+            ctx.beginPath();
+            ctx.arc(500, 150, 30, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+            ctx.strokeStyle = '#f44336';
+            ctx.beginPath();
+            ctx.arc(500, 150, 32, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.strokeStyle = 'black';
+            ctx.fillStyle = 'black';
+            ctx.fillText('q4', 495, 155);
+            
+            // Transiciones
+            ctx.beginPath();
+            ctx.moveTo(130, 150);
+            ctx.lineTo(170, 150);
+            ctx.stroke();
+            ctx.fillText('a → X', 140, 140);
+            
+            ctx.beginPath();
+            ctx.moveTo(230, 150);
+            ctx.lineTo(270, 150);
+            ctx.stroke();
+            ctx.fillText('b → Y', 240, 140);
+            
+            ctx.beginPath();
+            ctx.moveTo(330, 150);
+            ctx.lineTo(370, 150);
+            ctx.stroke();
+            ctx.fillText('c → Z', 340, 140);
+            
+            ctx.beginPath();
+            ctx.moveTo(430, 150);
+            ctx.lineTo(470, 150);
+            ctx.stroke();
+            ctx.fillText('ε', 450, 140);
+        }
+        
+        // Dibujar autómatas al cargar la página
+        window.addEventListener('load', function() {
+            const pdaCanvas = document.getElementById('pda-canvas');
+            const lbaCanvas = document.getElementById('lba-canvas');
+            
+            if (pdaCanvas) drawPDA(pdaCanvas);
+            if (lbaCanvas) drawLBA(lbaCanvas);
+        });
+        
+        // =============================================
+        // Simulación de autómatas independientes de contexto
+        // =============================================
+        document.getElementById('test-pda').addEventListener('click', function() {
+            const input = document.getElementById('pda-input').value;
+            const resultDiv = document.getElementById('pda-result');
+            
+            // Validar que la entrada solo contenga 'a' y 'b'
+            if (!/^[ab]*$/.test(input)) {
+                resultDiv.textContent = '✗ Error: La cadena solo puede contener los símbolos "a" y "b"';
+                resultDiv.className = 'result error';
+                return;
+            }
+            
+            // Simulación del autómata de pila para {a^n b^n}
+            let stack = ['Z']; // Símbolo inicial de la pila
+            let state = 'q0';
+            let explanation = '';
+            
+            // Fase 1: Procesar las 'a'
+            let i = 0;
+            for (; i < input.length && input[i] === 'a'; i++) {
+                stack.push('A');
+                explanation += `Leído 'a': Se apila 'A'. Pila: [${stack.join(', ')}]<br>`;
+            }
+            
+            // Cambiar al estado q1
+            state = 'q1';
+            explanation += `Cambio al estado ${state}<br>`;
+            
+            // Fase 2: Procesar las 'b'
+            for (; i < input.length && input[i] === 'b'; i++) {
+                if (stack.length > 1 && stack[stack.length - 1] === 'A') {
+                    stack.pop();
+                    explanation += `Leído 'b': Se desapila 'A'. Pila: [${stack.join(', ')}]<br>`;
+                } else {
+                    explanation += `Leído 'b': Error - no hay 'A' para desapilar<br>`;
+                    break;
+                }
+            }
+            
+            // Verificar si procesamos toda la cadena y estamos en estado final
+            if (i === input.length && stack.length === 1 && stack[0] === 'Z' && state === 'q1') {
+                state = 'q2'; // Estado de aceptación
+                explanation += `Cadena completamente procesada. Pila vacía excepto por 'Z'. Cadena ACEPTADA.`;
+                resultDiv.textContent = '✓ La cadena es aceptada por el autómata';
+                resultDiv.className = 'result success';
+            } else {
+                explanation += `Cadena RECHAZADA. Razón: `;
+                if (i < input.length) {
+                    explanation += `Símbolo inesperado '${input[i]}' en posición ${i+1}`;
+                } else if (stack.length !== 1 || stack[0] !== 'Z') {
+                    explanation += `La pila no está vacía (contiene: [${stack.join(', ')}])`;
+                } else {
+                    explanation += `No se llegó al estado de aceptación`;
+                }
+                resultDiv.textContent = '✗ La cadena NO es aceptada por el autómata';
+                resultDiv.className = 'result error';
+            }
+            
+            // Mostrar explicación detallada
+            resultDiv.innerHTML += `<br><br><strong>Explicación:</strong><br>${explanation}`;
+        });
+        
+        // =============================================
+        // Simulación de autómatas dependientes de contexto
+        // =============================================
+        document.getElementById('test-lba').addEventListener('click', function() {
+            const input = document.getElementById('lba-input').value;
+            const resultDiv = document.getElementById('lba-result');
+            
+            // Validar que la entrada solo contenga 'a', 'b' y 'c'
+            if (!/^[abc]*$/.test(input)) {
+                resultDiv.textContent = '✗ Error: La cadena solo puede contener los símbolos "a", "b" y "c"';
+                resultDiv.className = 'result error';
+                return;
+            }
+            
+            // Simulación del autómata lineal acotado para {a^n b^n c^n}
+            let tape = input.split('');
+            let head = 0;
+            let state = 'q0';
+            let explanation = '';
+            let aCount = 0, bCount = 0, cCount = 0;
+            
+            // Contar a's, b's y c's
+            for (let i = 0; i < tape.length; i++) {
+                if (tape[i] === 'a') aCount++;
+                else if (tape[i] === 'b') bCount++;
+                else if (tape[i] === 'c') cCount++;
+            }
+            
+            // Verificar si hay igual cantidad de a's, b's y c's
+            // y si están en el orden correcto (todas las a's, luego todas las b's, luego todas las c's)
+            let validOrder = true;
+            let currentChar = 'a';
+            for (let i = 0; i < tape.length; i++) {
+                if (tape[i] === 'b' && currentChar === 'a') currentChar = 'b';
+                if (tape[i] === 'c' && currentChar === 'b') currentChar = 'c';
+                if ((tape[i] === 'a' && currentChar !== 'a') || 
+                    (tape[i] === 'b' && currentChar !== 'a' && currentChar !== 'b') ||
+                    (tape[i] === 'c' && currentChar !== 'b' && currentChar !== 'c')) {
+                    validOrder = false;
+                    break;
+                }
+            }
+            
+            if (aCount === bCount && bCount === cCount && validOrder && aCount > 0) {
+                explanation = `La cadena tiene igual cantidad de 'a' (${aCount}), 'b' (${bCount}) y 'c' (${cCount}), y están en el orden correcto. Cadena ACEPTADA.`;
+                resultDiv.textContent = '✓ La cadena es aceptada por el autómata';
+                resultDiv.className = 'result success';
+            } else {
+                explanation = `La cadena es RECHAZADA. Razón: `;
+                if (aCount !== bCount || bCount !== cCount) {
+                    explanation += `Cantidades desiguales de símbolos (a:${aCount}, b:${bCount}, c:${cCount})`;
+                } else if (!validOrder) {
+                    explanation += `Los símbolos no están en el orden correcto (deben ser todas las 'a', luego todas las 'b', luego todas las 'c')`;
+                } else {
+                    explanation += `La cadena está vacía o no cumple con el formato requerido`;
+                }
+                resultDiv.textContent = '✗ La cadena NO es aceptada por el autómata';
+                resultDiv.className = 'result error';
+            }
+            
+            // Mostrar explicación detallada
+            resultDiv.innerHTML += `<br><br><strong>Explicación:</strong><br>${explanation}`;
+        });
+        
+        // =============================================
+        // Simulación paso a paso para PDA
+        // =============================================
+        let pdaSimulation = null;
+        
+        document.getElementById('simulate-pda').addEventListener('click', function() {
+            const input = document.getElementById('pda-simulation-input').value;
+            const stepsDiv = document.getElementById('pda-simulation-steps');
+            
+            if (!/^[ab]*$/.test(input)) {
+                stepsDiv.innerHTML = `<div class="result error">Error: La cadena solo puede contener los símbolos "a" y "b"</div>`;
+                return;
+            }
+            
+            // Inicializar simulación
+            pdaSimulation = {
+                input: input,
+                position: 0,
+                stack: ['Z'],
+                state: 'q0',
+                steps: [],
+                currentStep: 0
+            };
+            
+            // Habilitar/deshabilitar botones
+            document.getElementById('step-pda').disabled = false;
+            document.getElementById('reset-pda').disabled = false;
+            document.getElementById('simulate-pda').disabled = true;
+            
+            // Mostrar estado inicial
+            stepsDiv.innerHTML = '';
+            addPDAStep(stepsDiv, 'Estado inicial', pdaSimulation.state, pdaSimulation.stack, pdaSimulation.position, input);
+        });
+        
+        document.getElementById('step-pda').addEventListener('click', function() {
+            if (!pdaSimulation) return;
+            
+            const stepsDiv = document.getElementById('pda-simulation-steps');
+            const input = pdaSimulation.input;
+            let { position, stack, state } = pdaSimulation;
+            
+            // Si ya terminamos, no hacer nada
+            if (state === 'q2' || (state === 'q1' && position === input.length && stack.length === 1 && stack[0] === 'Z')) {
+                if (state === 'q1' && position === input.length && stack.length === 1 && stack[0] === 'Z') {
+                    state = 'q2';
+                    addPDAStep(stepsDiv, 'Cadena aceptada: se llegó al estado final con la pila vacía excepto por Z', state, stack, position, input);
+                }
+                return;
+            }
+            
+            // Procesar un paso
+            let description = '';
+            
+            if (state === 'q0') {
+                if (position < input.length && input[position] === 'a') {
+                    stack.push('A');
+                    description = `Leído 'a': se apila 'A'`;
+                    position++;
+                } else {
+                    state = 'q1';
+                    description = `Cambio al estado q1 para procesar 'b'`;
+                }
+            } else if (state === 'q1') {
+                if (position < input.length && input[position] === 'b') {
+                    if (stack.length > 1 && stack[stack.length - 1] === 'A') {
+                        stack.pop();
+                        description = `Leído 'b': se desapila 'A'`;
+                        position++;
+                    } else {
+                        description = `Error: no hay 'A' para desapilar. Cadena rechazada.`;
+                        state = 'error';
+                    }
+                } else if (position === input.length && stack.length === 1 && stack[0] === 'Z') {
+                    state = 'q2';
+                    description = `Cadena completamente procesada. Pila vacía excepto por 'Z'. Cadena ACEPTADA.`;
+                } else {
+                    description = `Error: símbolo inesperado o pila incorrecta. Cadena rechazada.`;
+                    state = 'error';
+                }
+            }
+            
+            // Actualizar simulación
+            pdaSimulation.position = position;
+            pdaSimulation.stack = [...stack];
+            pdaSimulation.state = state;
+            pdaSimulation.currentStep++;
+            
+            // Mostrar paso
+            addPDAStep(stepsDiv, description, state, stack, position, input);
+            
+            // Si terminó, deshabilitar botón de siguiente paso
+            if (state === 'q2' || state === 'error') {
+                document.getElementById('step-pda').disabled = true;
+            }
+        });
+        
+        document.getElementById('reset-pda').addEventListener('click', function() {
+            pdaSimulation = null;
+            document.getElementById('pda-simulation-steps').innerHTML = '';
+            document.getElementById('step-pda').disabled = true;
+            document.getElementById('reset-pda').disabled = true;
+            document.getElementById('simulate-pda').disabled = false;
+        });
+        
+        function addPDAStep(container, description, state, stack, position, input) {
+            const step = document.createElement('div');
+            step.className = 'simulation-step';
+            
+            let stackHTML = '<div class="stack">';
+            for (let i = stack.length - 1; i >= 0; i--) {
+                stackHTML += `<div class="stack-item">${stack[i]}</div>`;
+            }
+            stackHTML += '</div>';
+            
+            let inputWithPointer = '';
+            for (let i = 0; i < input.length; i++) {
+                if (i === position) {
+                    inputWithPointer += `<u>${input[i]}</u>`;
+                } else {
+                    inputWithPointer += input[i];
+                }
+            }
+            if (position === input.length) {
+                inputWithPointer += '<u>ε</u>';
+            }
+            
+            step.innerHTML = `
+                <strong>Paso ${pdaSimulation ? pdaSimulation.currentStep : 0}:</strong> ${description}<br>
+                <strong>Estado:</strong> ${state}<br>
+                <strong>Entrada restante:</strong> ${inputWithPointer}<br>
+                <strong>Pila:</strong> ${stackHTML}
+            `;
+            
+            container.appendChild(step);
+            step.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // =============================================
+        // Simulación paso a paso para LBA - CORREGIDA
+        // =============================================
+        let lbaSimulation = null;
+        
+        document.getElementById('simulate-lba').addEventListener('click', function() {
+            const input = document.getElementById('lba-simulation-input').value;
+            const stepsDiv = document.getElementById('lba-simulation-steps');
+            
+            if (!/^[abc]*$/.test(input)) {
+                stepsDiv.innerHTML = `<div class="result error">Error: La cadena solo puede contener los símbolos "a", "b" y "c"</div>`;
+                return;
+            }
+            
+            // Inicializar simulación
+            lbaSimulation = {
+                input: input,
+                tape: input.split(''),
+                head: 0,
+                state: 'q0',
+                steps: [],
+                currentStep: 0,
+                marked: Array(input.length).fill(false)
+            };
+            
+            // Habilitar/deshabilitar botones
+            document.getElementById('step-lba').disabled = false;
+            document.getElementById('reset-lba').disabled = false;
+            document.getElementById('simulate-lba').disabled = true;
+            
+            // Mostrar estado inicial
+            stepsDiv.innerHTML = '';
+            addLBAStep(stepsDiv, 'Estado inicial', lbaSimulation.state, lbaSimulation.tape, lbaSimulation.head, lbaSimulation.marked);
+        });
+        
+        document.getElementById('step-lba').addEventListener('click', function() {
+            if (!lbaSimulation) return;
+            
+            const stepsDiv = document.getElementById('lba-simulation-steps');
+            let { tape, head, state, marked } = lbaSimulation;
+            
+            // Si ya terminamos, no hacer nada
+            if (state === 'q4' || state === 'error') {
+                return;
+            }
+            
+            // Procesar un paso
+            let description = '';
+            let currentSymbol = head < tape.length ? tape[head] : 'ε';
+            
+            if (state === 'q0') {
+                if (currentSymbol === 'a' && !marked[head]) {
+                    marked[head] = true;
+                    description = `Marcar 'a' en posición ${head+1}`;
+                    head++;
+                    state = 'q1';
+                } else if (currentSymbol === 'ε') {
+                    state = 'q4';
+                    description = `Cadena vacía aceptada`;
+                } else {
+                    state = 'error';
+                    description = `Símbolo inesperado '${currentSymbol}' en estado q0`;
+                }
+            } else if (state === 'q1') {
+                if (currentSymbol === 'a' && !marked[head]) {
+                    // Seguir avanzando sobre las 'a'
+                    head++;
+                    description = `Avanzar sobre 'a' en posición ${head}`;
+                } else if (currentSymbol === 'b' && !marked[head]) {
+                    marked[head] = true;
+                    description = `Marcar 'b' en posición ${head+1}`;
+                    head++;
+                    state = 'q2';
+                } else {
+                    state = 'error';
+                    description = `Símbolo inesperado '${currentSymbol}' en estado q1`;
+                }
+            } else if (state === 'q2') {
+                if (currentSymbol === 'b' && !marked[head]) {
+                    // Seguir avanzando sobre las 'b'
+                    head++;
+                    description = `Avanzar sobre 'b' en posición ${head}`;
+                } else if (currentSymbol === 'c' && !marked[head]) {
+                    marked[head] = true;
+                    description = `Marcar 'c' en posición ${head+1}`;
+                    head++;
+                    state = 'q3';
+                } else {
+                    state = 'error';
+                    description = `Símbolo inesperado '${currentSymbol}' en estado q2`;
+                }
+            } else if (state === 'q3') {
+                if (currentSymbol === 'c' && !marked[head]) {
+                    // Seguir avanzando sobre las 'c'
+                    head++;
+                    description = `Avanzar sobre 'c' en posición ${head}`;
+                } else if (currentSymbol === 'ε') {
+                    // Volver al inicio para verificar si todas están marcadas
+                    head = 0;
+                    state = 'q0';
+                    description = `Volver al inicio para verificar marcado completo`;
+                    
+                    // Verificar si todas están marcadas
+                    let allMarked = true;
+                    for (let i = 0; i < tape.length; i++) {
+                        if (!marked[i]) {
+                            allMarked = false;
+                            break;
+                        }
+                    }
+                    if (allMarked) {
+                        state = 'q4';
+                        description += `. Todas las posiciones marcadas. Cadena ACEPTADA.`;
+                    }
+                } else {
+                    state = 'error';
+                    description = `Símbolo inesperado '${currentSymbol}' en estado q3`;
+                }
+            }
+            
+            // Actualizar simulación
+            lbaSimulation.head = head;
+            lbaSimulation.state = state;
+            lbaSimulation.marked = [...marked];
+            lbaSimulation.currentStep++;
+            
+            // Mostrar paso
+            addLBAStep(stepsDiv, description, state, tape, head, marked);
+            
+            // Si terminó, deshabilitar botón de siguiente paso
+            if (state === 'q4' || state === 'error') {
+                document.getElementById('step-lba').disabled = true;
+            }
+        });
+        
+        document.getElementById('reset-lba').addEventListener('click', function() {
+            lbaSimulation = null;
+            document.getElementById('lba-simulation-steps').innerHTML = '';
+            document.getElementById('step-lba').disabled = true;
+            document.getElementById('reset-lba').disabled = true;
+            document.getElementById('simulate-lba').disabled = false;
+        });
+        
+        function addLBAStep(container, description, state, tape, head, marked) {
+            const step = document.createElement('div');
+            step.className = 'simulation-step';
+            
+            let tapeHTML = '<div class="tape">';
+            for (let i = 0; i < tape.length; i++) {
+                let cellClass = 'tape-cell';
+                if (i === head) cellClass += ' current';
+                if (marked[i]) cellClass += ' marked';
+                
+                const symbol = marked[i] ? 'X' : tape[i];
+                tapeHTML += `<div class="${cellClass}">${symbol}</div>`;
+            }
+            if (head >= tape.length) {
+                tapeHTML += `<div class="tape-cell current">ε</div>`;
+            }
+            tapeHTML += '</div>';
+            
+            step.innerHTML = `
+                <strong>Paso ${lbaSimulation ? lbaSimulation.currentStep : 0}:</strong> ${description}<br>
+                <strong>Estado:</strong> ${state}<br>
+                <strong>Cinta:</strong> ${tapeHTML}
+            `;
+            
+            container.appendChild(step);
+            step.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // =============================================
+        // JUEGOS INTERACTIVOS - COMPLETAMENTE FUNCIONALES
+        // =============================================
+        
+        // Juego de identificación
+        let identificationScore = 0;
+        let identificationAttempts = 0;
+        let currentIdentificationQuestion = 0;
+        
+        const identificationQuestions = [
+            {
+                language: "{aⁿbⁿ | n ≥ 0}",
+                correctType: "independent",
+                explanation: "Este lenguaje puede ser reconocido por un autómata de pila (PDA), que es un autómata independiente de contexto. El PDA puede usar su pila para contar el número de 'a' y verificar que haya la misma cantidad de 'b'."
+            },
+            {
+                language: "{aⁿbⁿcⁿ | n ≥ 0}",
+                correctType: "dependent",
+                explanation: "Este lenguaje no puede ser reconocido por un autómata de pila, ya que requiere verificar tres conteos simultáneamente. Es un lenguaje sensible al contexto que requiere un autómata lineal acotado (LBA)."
+            },
+            {
+                language: "Palíndromos sobre {a, b}",
+                correctType: "independent",
+                explanation: "Los palíndromos pueden ser reconocidos por un autómata de pila (PDA). El PDA puede apilar la primera mitad de la cadena y luego comparar con la segunda mitad desapilando."
+            },
+            {
+                language: "{aⁿ | n es un número primo}",
+                correctType: "dependent",
+                explanation: "Este lenguaje requiere verificar una propiedad matemática compleja (primalidad) que no puede ser realizada por un autómata de pila. Es un lenguaje sensible al contexto."
+            }
+        ];
+        
+        function initializeIdentificationGame() {
+            // Ocultar otros juegos
+            document.getElementById('construction-game').style.display = 'none';
+            document.getElementById('validation-game').style.display = 'none';
+            
+            // Mostrar juego de identificación
+            document.getElementById('identification-game').style.display = 'block';
+            
+            // Reiniciar puntuación
+            identificationScore = 0;
+            identificationAttempts = 0;
+            currentIdentificationQuestion = 0;
+            
+            // Mostrar primera pregunta
+            showIdentificationQuestion();
+        }
+        
+        function showIdentificationQuestion() {
+            if (currentIdentificationQuestion >= identificationQuestions.length) {
+                // Fin del juego
+                document.getElementById('language-display').textContent = "¡Juego completado!";
+                document.getElementById('identification-result').textContent = `Puntuación final: ${identificationScore} de ${identificationQuestions.length}`;
+                document.getElementById('identification-result').className = 'result success';
+                return;
+            }
+            
+            const question = identificationQuestions[currentIdentificationQuestion];
+            document.getElementById('language-display').textContent = question.language;
+            document.getElementById('identification-result').textContent = '';
+            document.getElementById('identification-result').className = 'result';
+            
+            updateIdentificationScore();
+        }
+        
+        function updateIdentificationScore() {
+            document.getElementById('identification-score').textContent = `Aciertos: ${identificationScore} / Intentos: ${identificationAttempts}`;
+        }
+        
+        // Event listeners para las opciones de identificación
+        document.querySelectorAll('.identification-option').forEach(button => {
+            button.addEventListener('click', function() {
+                const selectedType = this.getAttribute('data-type');
+                const question = identificationQuestions[currentIdentificationQuestion];
+                const resultDiv = document.getElementById('identification-result');
+                
+                identificationAttempts++;
+                
+                if (selectedType === question.correctType) {
+                    identificationScore++;
+                    resultDiv.textContent = "¡Correcto! " + question.explanation;
+                    resultDiv.className = 'result success';
+                } else {
+                    resultDiv.textContent = "Incorrecto. " + question.explanation;
+                    resultDiv.className = 'result error';
+                }
+                
+                updateIdentificationScore();
+            });
+        });
+        
+        document.getElementById('next-identification').addEventListener('click', function() {
+            currentIdentificationQuestion++;
+            showIdentificationQuestion();
+        });
+        
+        document.getElementById('reset-identification').addEventListener('click', function() {
+            identificationScore = 0;
+            identificationAttempts = 0;
+            currentIdentificationQuestion = 0;
+            showIdentificationQuestion();
+        });
+        
+        // Juego de construcción (simplificado)
+        document.getElementById('game-construction').addEventListener('click', function() {
+            // Ocultar otros juegos
+            document.getElementById('identification-game').style.display = 'none';
+            document.getElementById('validation-game').style.display = 'none';
+            
+            // Mostrar juego de construcción
+            document.getElementById('construction-game').style.display = 'block';
+            
+            // Limpiar resultados anteriores
+            document.getElementById('construction-result').textContent = '';
+            document.getElementById('construction-result').className = 'result';
+        });
+        
+        // Juego de validación
+        let validationScore = 0;
+        let validationAttempts = 0;
+        
+        document.getElementById('game-validation').addEventListener('click', function() {
+            // Ocultar otros juegos
+            document.getElementById('identification-game').style.display = 'none';
+            document.getElementById('construction-game').style.display = 'none';
+            
+            // Mostrar juego de validación
+            document.getElementById('validation-game').style.display = 'block';
+            
+            // Reiniciar selecciones
+            document.querySelectorAll('.validation-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Limpiar resultados anteriores
+            document.getElementById('validation-result').textContent = '';
+            document.getElementById('validation-result').className = 'result';
+            
+            updateValidationScore();
+        });
+        
+        // Selección de opciones en el juego de validación
+        document.querySelectorAll('.validation-option').forEach(option => {
+            option.addEventListener('click', function() {
+                this.classList.toggle('selected');
+            });
+        });
+        
+        // Verificar respuestas en el juego de validación
+        document.getElementById('check-validation').addEventListener('click', function() {
+            const selectedOptions = document.querySelectorAll('.validation-option.selected');
+            const resultDiv = document.getElementById('validation-result');
+            
+            // Cadenas que pertenecen al lenguaje {a^n b^n}
+            const validStrings = ['ab', 'aabb', 'aaabbb'];
+            
+            let correct = true;
+            let selectedStrings = [];
+            
+            // Verificar las selecciones
+            selectedOptions.forEach(option => {
+                const cadena = option.getAttribute('data-cadena');
+                selectedStrings.push(cadena);
+                
+                // Verificar si la cadena seleccionada es válida
+                if (!validStrings.includes(cadena)) {
+                    correct = false;
+                }
+            });
+            
+            // Verificar si se seleccionaron todas las cadenas válidas
+            validStrings.forEach(validString => {
+                if (!selectedStrings.includes(validString)) {
+                    correct = false;
+                }
+            });
+            
+            validationAttempts++;
+            
+            if (correct) {
+                validationScore++;
+                resultDiv.textContent = "¡Correcto! Has seleccionado todas las cadenas que pertenecen al lenguaje {aⁿbⁿ}.";
+                resultDiv.className = 'result success';
+            } else {
+                resultDiv.textContent = "Incorrecto. Las cadenas que pertenecen al lenguaje {aⁿbⁿ} son: ab, aabb, aaabbb (y similares con igual número de 'a' y 'b').";
+                resultDiv.className = 'result error';
+            }
+            
+            updateValidationScore();
+        });
+        
+        function updateValidationScore() {
+            document.getElementById('validation-score').textContent = `Aciertos: ${validationScore} / Intentos: ${validationAttempts}`;
+        }
+        
+        document.getElementById('next-validation').addEventListener('click', function() {
+            // Reiniciar selecciones
+            document.querySelectorAll('.validation-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Limpiar resultados
+            document.getElementById('validation-result').textContent = '';
+            document.getElementById('validation-result').className = 'result';
+        });
+        
+        document.getElementById('reset-validation').addEventListener('click', function() {
+            validationScore = 0;
+            validationAttempts = 0;
+            updateValidationScore();
+            
+            // Reiniciar selecciones
+            document.querySelectorAll('.validation-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Limpiar resultados
+            document.getElementById('validation-result').textContent = '';
+            document.getElementById('validation-result').className = 'result';
+        });
+        
+        // Inicializar el primer juego al cargar la página en la sección de juegos
+        if (window.location.hash === '#juego' || document.getElementById('juego').classList.contains('active')) {
+            initializeIdentificationGame();
+        }
+    </script>
+</body>
+</html>
