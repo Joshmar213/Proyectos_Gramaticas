@@ -23,18 +23,20 @@
             height: 750px;
             width: 100%;
             border: none;
-            border-radius: 12px;
+            border-radius: 0 0 12px 12px; /* Redondear solo abajo */
             box-shadow: 0 10px 25px rgba(0,0,0,0.15);
             background: white;
+            display: block;
         }
 
-        /* Estilos del Acordeón */
+        /* Estilos del Acordeón General */
         .accordion-button:not(.collapsed) {
             background-color: #e7f1ff;
             color: #0c63e4;
             font-weight: bold;
         }
         .accordion-button { font-weight: 500; }
+        
         .accordion-item {
             border: none;
             margin-bottom: 10px;
@@ -43,6 +45,16 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
         
+        /* Estilo específico para la Guía del Simulador */
+        .guide-accordion .accordion-button {
+            background-color: #fff3cd; /* Un tono amarillo suave para diferenciarlo */
+            color: #856404;
+        }
+        .guide-accordion .accordion-button:not(.collapsed) {
+            background-color: #ffecb5;
+            color: #664d03;
+        }
+
         .highlight-box {
             background-color: #f8f9fa;
             border-left: 4px solid #4ca1af;
@@ -68,7 +80,7 @@
             font-size: 0.9em;
             margin-top: 5px;
             font-weight: bold;
-            display: none; /* Oculto por defecto */
+            display: none;
         }
     </style>
 </head>
@@ -84,7 +96,7 @@
 
     <div class="container mb-5">
         
-        <!-- SECCIÓN 1: TEORÍA EN ACORDEÓN -->
+        <!-- SECCIÓN 1: TEORÍA -->
         <div class="row mb-5">
             <div class="col-lg-10 mx-auto">
                 <h3 class="mb-3 text-secondary"><i class="bi bi-book-half"></i> Fundamentos Teóricos</h3>
@@ -99,16 +111,16 @@
                         </h2>
                         <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionTeoria">
                             <div class="accordion-body">
-                                <p>No es una máquina física que puedas comprar, es un <strong>modelo teórico</strong>. Su propósito es definir los límites de la computación.</p>
+                                <p>No es una máquina física, es un <strong>modelo teórico</strong> para definir la computación.</p>
                                 <div class="highlight-box">
                                     <h5>🧠 La Analogía del Operario</h5>
-                                    <p>Imagina un operario metódico con una <strong>cinta de papel infinita</strong> dividida en casillas. Él solo puede mirar una casilla a la vez y tiene un "estado mental".</p>
+                                    <p>Imagina un operario con una <strong>cinta infinita</strong>. Solo puede mirar una casilla a la vez y tiene un "estado mental".</p>
                                 </div>
-                                <p>Basado en su estado y lo que ve, su libro de reglas le permite hacer solo 3 cosas:</p>
+                                <p>Reglas básicas:</p>
                                 <ol>
-                                    <li><strong>Escribir</strong> un nuevo símbolo (o dejar el que está).</li>
-                                    <li><strong>Moverse</strong> una casilla a la izquierda o derecha.</li>
-                                    <li><strong>Cambiar</strong> de estado mental.</li>
+                                    <li><strong>Escribir</strong> un símbolo.</li>
+                                    <li><strong>Moverse</strong> (Izquierda/Derecha).</li>
+                                    <li><strong>Cambiar</strong> de estado.</li>
                                 </ol>
                             </div>
                         </div>
@@ -123,11 +135,10 @@
                         </h2>
                         <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionTeoria">
                             <div class="accordion-body">
-                                <p>Imagina la <strong>Gramática</strong> como un "Libro de Leyes" y la <strong>Máquina</strong> como el "Juez".</p>
                                 <ul class="list-group list-group-flush">
-                                    <li class="list-group-item"><strong>Nivel 1: Reglas Simples (Autómata Finito)</strong><br>Sin memoria. Como un torno de metro.</li>
-                                    <li class="list-group-item"><strong>Nivel 2: Estructura (Autómata de Pila)</strong><br>Memoria limitada (pila). Ideal para paréntesis.</li>
-                                    <li class="list-group-item"><strong>Nivel 3: Reglas Totales (Máquina de Turing)</strong><br>Memoria infinita (cinta) y libertad de movimiento.</li>
+                                    <li class="list-group-item"><strong>Nivel 1: Autómata Finito</strong> (Sin memoria).</li>
+                                    <li class="list-group-item"><strong>Nivel 2: Autómata de Pila</strong> (Memoria limitada).</li>
+                                    <li class="list-group-item"><strong>Nivel 3: Máquina de Turing</strong> (Memoria infinita y libertad).</li>
                                 </ul>
                             </div>
                         </div>
@@ -142,8 +153,8 @@
                         </h2>
                         <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionTeoria">
                             <div class="accordion-body">
-                                <p><strong>Gramáticas Libres de Contexto ("Visión de Túnel"):</strong> La máquina ve un símbolo y lo cambia sin mirar a los vecinos.</p>
-                                <p><strong>Gramáticas Dependientes del Contexto ("Inspector Sospechoso"):</strong> La máquina viaja a la izquierda y derecha para verificar el entorno antes de actuar.</p>
+                                <p><strong>Visión de Túnel:</strong> La máquina cambia símbolos sin mirar a los lados (Libre de Contexto).</p>
+                                <p><strong>Inspector Sospechoso:</strong> La máquina viaja a los lados para verificar el entorno antes de actuar (Dependiente del Contexto).</p>
                             </div>
                         </div>
                     </div>
@@ -161,7 +172,7 @@
                                 <ol>
                                     <li><strong>Escáner (Autómata Finito):</strong> Reconoce palabras.</li>
                                     <li><strong>Arquitecto (Autómata de Pila):</strong> Verifica estructura.</li>
-                                    <li><strong>Policía Lógico (Máquina de Turing):</strong> Verifica el sentido y contexto (variables, tipos).</li>
+                                    <li><strong>Policía Lógico (Máquina de Turing):</strong> Verifica el sentido y contexto.</li>
                                 </ol>
                             </div>
                         </div>
@@ -170,107 +181,46 @@
             </div>
         </div>
 
-        <!-- SECCIÓN 2: CUESTIONARIO (NUEVA SECCIÓN) -->
+        <!-- SECCIÓN 2: CUESTIONARIO -->
         <div class="row mb-5">
             <div class="col-lg-8 mx-auto">
                 <div class="quiz-card border-top border-4 border-warning">
                     <h3 class="mb-4 text-warning"><i class="bi bi-pencil-square"></i> Cuestionario de Repaso</h3>
-                    <p class="text-muted">Pon a prueba lo que acabas de leer antes de usar el simulador.</p>
-
                     <form id="quizForm">
-                        
-                        <!-- Pregunta 1 -->
                         <div class="question-box">
                             <p class="fw-bold">1. ¿Cuál de los siguientes NO es un componente de una Máquina de Turing?</p>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="q1" id="q1a" value="A">
-                                <label class="form-check-label" for="q1a">A. Cinta</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="q1" id="q1b" value="B">
-                                <label class="form-check-label" for="q1b">B. Cabezal lector/escritor</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="q1" id="q1c" value="C">
-                                <label class="form-check-label" for="q1c">C. Pila</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="q1" id="q1d" value="D">
-                                <label class="form-check-label" for="q1d">D. Conjunto de estados</label>
-                            </div>
+                            <div class="form-check"><input class="form-check-input" type="radio" name="q1" value="A"><label>A. Cinta</label></div>
+                            <div class="form-check"><input class="form-check-input" type="radio" name="q1" value="B"><label>B. Cabezal lector/escritor</label></div>
+                            <div class="form-check"><input class="form-check-input" type="radio" name="q1" value="C"><label>C. Pila</label></div>
+                            <div class="form-check"><input class="form-check-input" type="radio" name="q1" value="D"><label>D. Conjunto de estados</label></div>
                             <div id="result-q1" class="feedback"></div>
                         </div>
-
-                        <!-- Pregunta 2 -->
                         <div class="question-box">
                             <p class="fw-bold">2. ¿Qué ocurre cuando la Máquina de Turing entra en un estado de aceptación?</p>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="q2" id="q2a" value="A">
-                                <label class="form-check-label" for="q2a">A. Borra la cinta</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="q2" id="q2b" value="B">
-                                <label class="form-check-label" for="q2b">B. La máquina se detiene</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="q2" id="q2c" value="C">
-                                <label class="form-check-label" for="q2c">C. Repite la ejecución desde el inicio</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="q2" id="q2d" value="D">
-                                <label class="form-check-label" for="q2d">D. Cambia todas las celdas a blanco</label>
-                            </div>
+                            <div class="form-check"><input class="form-check-input" type="radio" name="q2" value="A"><label>A. Borra la cinta</label></div>
+                            <div class="form-check"><input class="form-check-input" type="radio" name="q2" value="B"><label>B. La máquina se detiene</label></div>
+                            <div class="form-check"><input class="form-check-input" type="radio" name="q2" value="C"><label>C. Repite ejecución</label></div>
+                            <div class="form-check"><input class="form-check-input" type="radio" name="q2" value="D"><label>D. Cambia todo a blanco</label></div>
                             <div id="result-q2" class="feedback"></div>
                         </div>
-
-                        <!-- Pregunta 3 -->
                         <div class="question-box">
                             <p class="fw-bold">3. ¿Cómo se representa una transición en una Máquina de Turing?</p>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="q3" id="q3a" value="A">
-                                <label class="form-check-label" for="q3a">A. (estado, símbolo) → (nuevo estado, símbolo escrito, movimiento)</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="q3" id="q3b" value="B">
-                                <label class="form-check-label" for="q3b">B. estado → símbolo</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="q3" id="q3c" value="C">
-                                <label class="form-check-label" for="q3c">C. símbolo → estado</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="q3" id="q3d" value="D">
-                                <label class="form-check-label" for="q3d">D. (estado, movimiento) → símbolo</label>
-                            </div>
+                            <div class="form-check"><input class="form-check-input" type="radio" name="q3" value="A"><label>A. (estado, símbolo) → (nuevo estado, símbolo, movimiento)</label></div>
+                            <div class="form-check"><input class="form-check-input" type="radio" name="q3" value="B"><label>B. estado → símbolo</label></div>
+                            <div class="form-check"><input class="form-check-input" type="radio" name="q3" value="C"><label>C. símbolo → estado</label></div>
+                            <div class="form-check"><input class="form-check-input" type="radio" name="q3" value="D"><label>D. (estado, movimiento) → símbolo</label></div>
                             <div id="result-q3" class="feedback"></div>
                         </div>
-
-                        <!-- Pregunta 4 -->
                         <div class="question-box">
                             <p class="fw-bold">4. ¿Qué tipo de lenguajes puede reconocer una Máquina de Turing?</p>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="q4" id="q4a" value="A">
-                                <label class="form-check-label" for="q4a">A. Solo lenguajes regulares</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="q4" id="q4b" value="B">
-                                <label class="form-check-label" for="q4b">B. Solo lenguajes libres de contexto</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="q4" id="q4c" value="C">
-                                <label class="form-check-label" for="q4c">C. Lenguajes recursivos y recursivamente enumerables</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="q4" id="q4d" value="D">
-                                <label class="form-check-label" for="q4d">D. Todos los lenguajes posibles</label>
-                            </div>
+                            <div class="form-check"><input class="form-check-input" type="radio" name="q4" value="A"><label>A. Solo regulares</label></div>
+                            <div class="form-check"><input class="form-check-input" type="radio" name="q4" value="B"><label>B. Solo libres de contexto</label></div>
+                            <div class="form-check"><input class="form-check-input" type="radio" name="q4" value="C"><label>C. Recursivos y recursivamente enumerables</label></div>
+                            <div class="form-check"><input class="form-check-input" type="radio" name="q4" value="D"><label>D. Todos los posibles</label></div>
                             <div id="result-q4" class="feedback"></div>
                         </div>
-
                         <div class="text-center mt-4">
-                            <button type="button" class="btn btn-primary px-5" onclick="validarRespuestas()">
-                                <i class="bi bi-check-circle"></i> Calificar Cuestionario
-                            </button>
+                            <button type="button" class="btn btn-primary px-5" onclick="validarRespuestas()"><i class="bi bi-check-circle"></i> Calificar</button>
                             <div id="finalScore" class="mt-3 fw-bold"></div>
                         </div>
                     </form>
@@ -285,6 +235,51 @@
                     <h3 class="text-secondary mb-0"><i class="bi bi-laptop"></i> Simulador Interactivo</h3>
                     <small class="text-muted">Desarrollado por turingmachine.io</small>
                 </div>
+
+                <!-- AQUÍ INICIA LA NUEVA SECCIÓN: GUÍA DE USO -->
+                <div class="accordion guide-accordion mb-0" id="accordionGuia">
+                    <div class="accordion-item border-bottom-0 rounded-bottom-0">
+                        <h2 class="accordion-header" id="headingGuia">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseGuia">
+                                <i class="bi bi-info-circle-fill me-2"></i> <strong>Guía de Uso:</strong> ¿Cómo entender y controlar este simulador?
+                            </button>
+                        </h2>
+                        <div id="collapseGuia" class="accordion-collapse collapse" data-bs-parent="#accordionGuia">
+                            <div class="accordion-body bg-light">
+                                <div class="row">
+                                    <div class="col-md-4 border-end">
+                                        <h5 class="text-primary"><i class="bi bi-joystick"></i> Los Controles</h5>
+                                        <p>En el panel izquierdo del simulador verás 3 botones clave:</p>
+                                        <ul class="small">
+                                            <li><strong>Play (Run):</strong> Ejecuta la máquina a velocidad normal.</li>
+                                            <li><strong>Step (Paso):</strong> ¡El más importante! Avanza un solo movimiento a la vez. Úsalo para ver la lógica paso a paso.</li>
+                                            <li><strong>Reset:</strong> Vuelve la cinta y el estado al inicio.</li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-4 border-end">
+                                        <h5 class="text-primary"><i class="bi bi-eye"></i> Lo Visual</h5>
+                                        <ul class="small">
+                                            <li><strong>Círculos (Diagrama):</strong> Son los <em>Estados</em>. El círculo azul es donde está la "mente" de la máquina ahora.</li>
+                                            <li><strong>Cuadrados (Abajo):</strong> Es la <em>Cinta Infinita</em>. El cuadrado amarillo indica qué está leyendo el cabezal.</li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <h5 class="text-primary"><i class="bi bi-code-slash"></i> El Código</h5>
+                                        <p class="small">A la derecha puedes escribir tus propias reglas:</p>
+                                        <ul class="small">
+                                            <li><code>input:</code> Define qué hay en la cinta al empezar.</li>
+                                            <li><code>table:</code> Define las reglas (Si estoy en estado X y leo Y -> Hago Z).</li>
+                                        </ul>
+                                        <div class="alert alert-warning py-1 px-2 small mb-0">
+                                            <i class="bi bi-lightbulb"></i> Tip: Prueba cargar ejemplos prehechos en el menú "Document" dentro del simulador.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- FIN DE LA GUÍA DE USO -->
                 
                 <iframe 
                     src="https://turingmachine.io/" 
@@ -307,56 +302,29 @@
     <!-- Lógica del Cuestionario -->
     <script>
         function validarRespuestas() {
-            // Respuestas correctas
-            const correctas = {
-                q1: 'C',
-                q2: 'B',
-                q3: 'A',
-                q4: 'C'
-            };
-
+            const correctas = { q1: 'C', q2: 'B', q3: 'A', q4: 'C' };
             let aciertos = 0;
             let total = 4;
 
-            // Recorremos cada pregunta
             for (let i = 1; i <= total; i++) {
-                const nombrePregunta = 'q' + i;
-                const opciones = document.getElementsByName(nombrePregunta);
+                const nombre = 'q' + i;
+                const opciones = document.getElementsByName(nombre);
                 let seleccionada = null;
+                for (let op of opciones) if (op.checked) seleccionada = op.value;
 
-                // Buscamos cuál marcó el usuario
-                for (let opcion of opciones) {
-                    if (opcion.checked) {
-                        seleccionada = opcion.value;
-                        break;
-                    }
-                }
+                const feedback = document.getElementById('result-' + nombre);
+                feedback.style.display = 'block';
 
-                const feedbackDiv = document.getElementById('result-' + nombrePregunta);
-                feedbackDiv.style.display = 'block';
-
-                // Verificamos si es correcta
-                if (seleccionada === correctas[nombrePregunta]) {
-                    feedbackDiv.innerHTML = '<span class="text-success"><i class="bi bi-check-lg"></i> ¡Correcto!</span>';
+                if (seleccionada === correctas[nombre]) {
+                    feedback.innerHTML = '<span class="text-success"><i class="bi bi-check-lg"></i> Correcto</span>';
                     aciertos++;
                 } else {
-                    let mensaje = '<span class="text-danger"><i class="bi bi-x-lg"></i> Incorrecto.</span> ';
-                    if(seleccionada === null) mensaje = '<span class="text-warning">No seleccionaste ninguna opción.</span> ';
-                    
-                    feedbackDiv.innerHTML = mensaje + 'La respuesta correcta es la <strong>' + correctas[nombrePregunta] + '</strong>.';
+                    feedback.innerHTML = '<span class="text-danger"><i class="bi bi-x-lg"></i> Incorrecto.</span> La respuesta es <strong>' + correctas[nombre] + '</strong>.';
                 }
             }
-
-            // Puntaje final
-            const scoreDiv = document.getElementById('finalScore');
-            scoreDiv.innerHTML = `Tu puntuación: ${aciertos} / ${total}`;
-            
-            if(aciertos === total) {
-                scoreDiv.className = "mt-3 fw-bold text-success fs-5";
-                scoreDiv.innerHTML += " <br>¡Excelente trabajo!";
-            } else {
-                scoreDiv.className = "mt-3 fw-bold text-secondary fs-5";
-            }
+            const score = document.getElementById('finalScore');
+            score.innerHTML = `Tu puntuación: ${aciertos} / ${total}`;
+            score.className = aciertos === total ? "mt-3 fw-bold text-success fs-5" : "mt-3 fw-bold text-secondary fs-5";
         }
     </script>
 </body>
